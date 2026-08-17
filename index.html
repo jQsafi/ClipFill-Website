@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClipFill - Smart Clipboard & Form Filler Extension</title>
+  <meta name="description" content="Collect copied text snippets, manage personal contact info, and auto-fill web forms instantly from a sleek side panel in Google Chrome and Microsoft Edge.">
+  <meta name="author" content="Shafayat Hossain">
+
+  <!-- Open Graph & Social Meta -->
+  <meta property="og:title" content="ClipFill - Smart Clipboard & Form Filler">
+  <meta property="og:description" content="Supercharge your browser productivity with ClipFill. Collect text snippets, pin key data, and auto-fill web forms with 1 click.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://jqsafi.github.io/ClipFill-Website/">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --border-glow: rgba(99, 102, 241, 0.4);
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #a855f7;
+      --accent: #ec4899;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --gradient-brand: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+      --radius: 16px;
+      --shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 85% 65%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header / Navbar */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(11, 15, 25, 0.8);
+      border-bottom: 1px solid var(--border-color);
+      padding: 18px 0;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-brand);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient-brand);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 90px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+      color: #fff;
+    }
+
+    .hero-title span {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      max-width: 720px;
+      margin: 0 auto 36px;
+      font-size: 18px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .hero-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* Interactive Demo Sandbox */
+    .demo-section {
+      padding: 60px 0 90px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .demo-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      min-height: 500px;
+    }
+
+    @media (max-width: 900px) {
+      .demo-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .demo-page {
+      padding: 36px;
+      background: #131b2e;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .demo-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .browser-url {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .demo-form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #d1d5db;
+    }
+
+    .form-input {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .demo-sidebar {
+      background: #0f172a;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .demo-snippet {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .demo-snippet:hover {
+      background: rgba(51, 65, 85, 0.9);
+      border-color: var(--primary);
+      transform: translateX(-4px);
+    }
+
+    .snippet-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .snippet-badge {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+    }
+
+    .snippet-val {
+      font-size: 13px;
+      color: #f3f4f6;
+      font-weight: 500;
+    }
+
+    .interactive-hint {
+      font-size: 12px;
+      color: #a7f3d0;
+      background: rgba(16, 185, 129, 0.1);
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      border: 1px dashed rgba(16, 185, 129, 0.3);
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 32px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-glow);
+      box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.3);
+    }
+
+    .feature-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, 0.15);
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .feature-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Developer Section */
+    .dev-section {
+      padding: 90px 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(17, 24, 39, 0.8) 100%);
+    }
+
+    .dev-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 48px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 40px;
+      align-items: center;
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(16px);
+    }
+
+    @media (max-width: 768px) {
+      .dev-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .dev-avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: var(--gradient-brand);
+      padding: 4px;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+    }
+
+    .dev-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: #111827;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+    }
+
+    .dev-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .dev-role {
+      color: #818cf8;
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .dev-bio {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .dev-contacts {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .dev-contacts {
+        justify-content: center;
+      }
+    }
+
+    .contact-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: #e5e7eb;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .contact-badge:hover {
+      background: rgba(99, 102, 241, 0.2);
+      border-color: var(--primary);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Installation Steps */
+    .install-section {
+      padding: 90px 0;
+    }
+
+    .browser-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .browser-tabs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .install-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 36px;
+    }
+
+    .browser-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .browser-icon {
+      font-size: 32px;
+    }
+
+    .browser-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .step-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      font-weight: 700;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-code {
+      background: rgba(0, 0, 0, 0.4);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+      color: #a5b4fc;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      background: rgba(11, 15, 25, 0.95);
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header / Navbar -->
+  <header>
+    <div class="container nav-wrapper">
+      <a href="#" class="logo">
+        <div class="logo-icon">📋</div>
+        <div class="logo-text">Clip<span>Fill</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#demo">Live Demo</a></li>
+        <li><a href="#developer">Developer</a></li>
+        <li><a href="#install">Install Guide</a></li>
+      </ul>
+      <div style="display: flex; gap: 12px;">
+        <a href="https://github.com/jQsafi/ClipFill" target="_blank" class="btn btn-secondary">
+          ⭐ GitHub Repo
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span>Manifest V3 • Chrome & Microsoft Edge Ready</span>
+      </div>
+      <h1 class="hero-title">
+        Smart Clipboard & <span>Form Filler</span> Assistant
+      </h1>
+      <p class="hero-subtitle">
+        Automatically collect copied text snippets, manage personal contact information, and easily fill out web forms right from a powerful browser sidebar.
+      </p>
+      <div class="hero-cta">
+        <a href="https://github.com/jQsafi/ClipFill" target="_blank" class="btn btn-primary" style="padding: 14px 28px; font-size: 16px;">
+          🚀 Chrome Main Branch
+        </a>
+        <a href="https://github.com/jQsafi/ClipFill/tree/ClipFill-Edge" target="_blank" class="btn btn-secondary" style="padding: 14px 28px; font-size: 16px;">
+          🌐 Microsoft Edge Branch
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Demo Sandbox -->
+  <section class="demo-section" id="demo">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Interactive Live Demo</h2>
+        <p class="section-desc">Click any form field on the left, then click a snippet in the sidebar on the right!</p>
+      </div>
+
+      <div class="demo-container">
+        <!-- Simulated Web Page Form -->
+        <div class="demo-page">
+          <div class="demo-page-header">
+            <div class="browser-dots">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div class="browser-url">https://example.com/checkout-form</div>
+          </div>
+          
+          <form class="demo-form" onsubmit="event.preventDefault();">
+            <div class="form-group">
+              <label for="demo-name">Full Name</label>
+              <input type="text" id="demo-name" class="form-input" placeholder="Click field to focus..." readonly>
+            </div>
+            <div class="form-group">
+              <label for="demo-email">Email Address</label>
+              <input type="email" id="demo-email" class="form-input" placeholder="Click field to focus..." readonly>
+            </div>
+            <div class="form-group">
+              <label for="demo-phone">Phone Number</label>
+              <input type="text" id="demo-phone" class="form-input" placeholder="Click field to focus..." readonly>
+            </div>
+            <div class="form-group">
+              <label for="demo-address">Shipping Address</label>
+              <input type="text" id="demo-address" class="form-input" placeholder="Click field to focus..." readonly>
+            </div>
+          </form>
+        </div>
+
+        <!-- Simulated ClipFill Sidebar -->
+        <div class="demo-sidebar">
+          <div class="sidebar-header">
+            <div class="sidebar-title">📋 ClipFill Sidebar</div>
+            <span style="font-size: 11px; color: #10b981; font-weight: 600;">Auto-Capture ON</span>
+          </div>
+
+          <div class="interactive-hint">
+            👉 <strong>Step 1:</strong> Click an input field<br>
+            👉 <strong>Step 2:</strong> Click a snippet below
+          </div>
+
+          <div class="demo-snippet" data-value="Shafayat Hossain">
+            <div class="snippet-top">
+              <span class="snippet-badge">Personal</span>
+              <span style="font-size: 11px; color: #f59e0b;">★ Pinned</span>
+            </div>
+            <div class="snippet-val">Shafayat Hossain</div>
+          </div>
+
+          <div class="demo-snippet" data-value="shafayat@engineer.com">
+            <div class="snippet-top">
+              <span class="snippet-badge">Personal</span>
+              <span style="font-size: 11px; color: #f59e0b;">★ Pinned</span>
+            </div>
+            <div class="snippet-val">shafayat@engineer.com</div>
+          </div>
+
+          <div class="demo-snippet" data-value="+1 (555) 019-2834">
+            <div class="snippet-top">
+              <span class="snippet-badge">Form Data</span>
+            </div>
+            <div class="snippet-val">+1 (555) 019-2834</div>
+          </div>
+
+          <div class="demo-snippet" data-value="123 Tech Boulevard, Innovation Suite #404">
+            <div class="snippet-top">
+              <span class="snippet-badge">Address</span>
+            </div>
+            <div class="snippet-val">123 Tech Boulevard...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="features-section" id="features" style="padding: 60px 0 90px;">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Built for Speed & Privacy</h2>
+        <p class="section-desc">Designed to boost your workflow without tracking your data.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3 class="feature-title">Smart Click-to-Fill</h3>
+          <p class="feature-desc">Click any snippet in the sidebar to populate the currently focused input box on any active webpage instantaneously.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3 class="feature-title">Auto Clipboard History</h3>
+          <p class="feature-desc">Monitored copy actions dynamically save snippets to your sidebar history, with 1-click toggle controls.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3 class="feature-title">Smart Form Inspector</h3>
+          <p class="feature-desc">Scans forms on the active page and maps your personal profile info (Name, Email, Phone) automatically.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📌</div>
+          <h3 class="feature-title">Pin & Categorize</h3>
+          <p class="feature-desc">Organize items by categories (*Personal*, *Form Data*, *General*, *Code*) and pin high-priority items to top.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3 class="feature-title">100% Local Storage</h3>
+          <p class="feature-desc">All snippets and history are saved strictly in your browser storage (`chrome.storage.local`). Zero cloud tracking.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <h3 class="feature-title">Cross-Browser Support</h3>
+          <p class="feature-desc">Fully optimized and tested on both Google Chrome and Microsoft Edge browser sidebars.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Developer Info Section -->
+  <section class="dev-section" id="developer">
+    <div class="container">
+      <div class="dev-card">
+        <div class="dev-avatar">
+          <div class="dev-avatar-inner">👨‍💻</div>
+        </div>
+        <div>
+          <h2 class="dev-name">Shafayat Hossain</h2>
+          <div class="dev-role">Software Engineer & Extension Architect</div>
+          <p class="dev-bio">
+            Passionate about building fast, intuitive browser extensions, modern web applications, and developer automation tools. Creator of ClipFill.
+          </p>
+          <div class="dev-contacts">
+            <a href="mailto:shafayat@engineer.com" class="contact-badge">
+              ✉️ shafayat@engineer.com
+            </a>
+            <a href="https://jqsafi.github.io" target="_blank" class="contact-badge">
+              🌐 Portfolio / Homepage
+            </a>
+            <a href="https://wa.me/@jqsafi" target="_blank" class="contact-badge">
+              💬 WhatsApp Contact
+            </a>
+            <a href="https://github.com/jQsafi" target="_blank" class="contact-badge">
+              🐙 GitHub Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Section -->
+  <section class="install-section" id="install">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Quick Installation Guide</h2>
+        <p class="section-desc">Load ClipFill in developer mode in under 60 seconds.</p>
+      </div>
+
+      <div class="browser-tabs">
+        <!-- Chrome Installation -->
+        <div class="install-card">
+          <div class="browser-header">
+            <div class="browser-icon">🌐</div>
+            <div class="browser-name">Google Chrome</div>
+          </div>
+          <ul class="step-list">
+            <li class="step-item">
+              <div class="step-num">1</div>
+              <div>Clone repository branch: <br><span class="step-code">git clone https://github.com/jQsafi/ClipFill.git</span></div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">2</div>
+              <div>Open Chrome and navigate to <span class="step-code">chrome://extensions</span></div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">3</div>
+              <div>Enable <strong>Developer mode</strong> in the top-right corner toggle.</div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">4</div>
+              <div>Click <strong>Load unpacked</strong> and select the project directory.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Edge Installation -->
+        <div class="install-card">
+          <div class="browser-header">
+            <div class="browser-icon">🌀</div>
+            <div class="browser-name">Microsoft Edge</div>
+          </div>
+          <ul class="step-list">
+            <li class="step-item">
+              <div class="step-num">1</div>
+              <div>Clone Edge branch: <br><span class="step-code">git clone -b ClipFill-Edge https://github.com/jQsafi/ClipFill.git</span></div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">2</div>
+              <div>Open Edge and navigate to <span class="step-code">edge://extensions</span></div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">3</div>
+              <div>Enable <strong>Developer mode</strong> in the bottom-left sidebar toggle.</div>
+            </li>
+            <li class="step-item">
+              <div class="step-num">4</div>
+              <div>Click <strong>Load unpacked</strong> and select the project directory.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2026 <strong>ClipFill</strong> • Crafted with ❤️ by <a href="https://jqsafi.github.io" target="_blank">Shafayat Hossain</a></p>
+      <p style="margin-top: 8px; font-size: 13px; color: #6b7280;">Released under the MIT License • Fully open source on GitHub</p>
+    </div>
+  </footer>
+
+  <!-- Interactive Demo Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let selectedInput = document.getElementById('demo-name');
+      selectedInput.style.borderColor = '#6366f1';
+      selectedInput.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.25)';
+
+      const inputs = document.querySelectorAll('.form-input');
+      inputs.forEach(input => {
+        input.addEventListener('click', () => {
+          inputs.forEach(i => {
+            i.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            i.style.boxShadow = 'none';
+          });
+          selectedInput = input;
+          selectedInput.style.borderColor = '#6366f1';
+          selectedInput.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.25)';
+        });
+      });
+
+      const snippets = document.querySelectorAll('.demo-snippet');
+      snippets.forEach(snippet => {
+        snippet.addEventListener('click', () => {
+          if (!selectedInput) return;
+          const val = snippet.dataset.value;
+          selectedInput.value = val;
+          selectedInput.style.borderColor = '#10b981';
+          selectedInput.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.3)';
+          setTimeout(() => {
+            selectedInput.style.borderColor = '#6366f1';
+            selectedInput.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.25)';
+          }, 800);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
