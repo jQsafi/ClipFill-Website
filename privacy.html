@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - ClipFill Browser Extension</title>
+  <meta name="description" content="Privacy Policy for ClipFill Smart Clipboard & Form Filler Browser Extension. Learn how your data is kept 100% private and stored locally on your device.">
+  <meta name="author" content="Shafayat Hossain">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0b0f19;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --border-color: rgba(255, 255, 255, 0.1);
+      --primary: #6366f1;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --gradient-brand: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.7;
+      padding-bottom: 60px;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 65%, rgba(168, 85, 247, 0.12) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(11, 15, 25, 0.85);
+      border-bottom: 1px solid var(--border-color);
+      padding: 18px 0;
+      margin-bottom: 40px;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-brand);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .logo-text span {
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .back-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+
+    .back-btn:hover {
+      color: #fff;
+    }
+
+    .privacy-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 48px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+    }
+
+    @media (max-width: 600px) {
+      .privacy-card {
+        padding: 24px;
+      }
+    }
+
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .meta-info {
+      color: #818cf8;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin: 28px 0 12px;
+    }
+
+    p, li {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    ul {
+      margin-left: 24px;
+      margin-bottom: 20px;
+    }
+
+    .highlight-box {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0;
+      color: #e0e7ff;
+    }
+
+    .highlight-box strong {
+      color: #fff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container nav-wrapper">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">📋</div>
+        <div class="logo-text">Clip<span>Fill</span></div>
+      </a>
+      <a href="index.html" class="back-btn">← Back to Main Page</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="privacy-card">
+      <h1 class="page-title">Privacy Policy</h1>
+      <div class="meta-info">
+        Last Updated: August 17, 2026 • Extension Version: 1.0.0
+      </div>
+
+      <div class="highlight-box">
+        <strong>🔒 Summary Pledge:</strong> ClipFill operates on a 100% local-first privacy model. All copied snippets, form templates, and personal profile information are stored exclusively in your browser local storage (<code>chrome.storage.local</code>). Zero data is transmitted to external servers or third parties.
+      </div>
+
+      <h2>1. Information Collection & Storage</h2>
+      <p>ClipFill collects and stores information solely to provide clipboard management and form filling functionality:</p>
+      <ul>
+        <li><strong>Copied Text Snippets:</strong> Text that you explicitly copy (or auto-captured when enabled) is saved to your sidebar history.</li>
+        <li><strong>Form Profile Data:</strong> Personal profile fields (such as Name, Email, Phone, Address) that you enter or edit in the sidebar.</li>
+        <li><strong>User Preferences:</strong> Settings such as Auto-Capture toggle state, category tags, and pinned status.</li>
+      </ul>
+
+      <h2>2. Where Data is Stored</h2>
+      <p>All stored data remains strictly on your local device inside the web browser's isolated local storage area (<code>chrome.storage.local</code>). Your data is never sent to any external server, cloud platform, database, or third-party service.</p>
+
+      <h2>3. Third-Party Sharing</h2>
+      <p>We do not share, sell, rent, or trade your data. Because ClipFill has zero remote servers, no third parties have access to your data under any circumstances.</p>
+
+      <h2>4. Browser Permissions Usage</h2>
+      <p>ClipFill requests only the necessary permissions required to operate:</p>
+      <ul>
+        <li><strong>sidePanel:</strong> Renders the ClipFill sidebar interface alongside active web pages.</li>
+        <li><strong>storage:</strong> Stores your clipboard snippets and form profile data locally.</li>
+        <li><strong>contextMenus:</strong> Enables the right-click "Save selection to ClipFill" menu item.</li>
+        <li><strong>tabs & scripting:</strong> Allows inspecting active page inputs and inserting selected text when you click a snippet or trigger form auto-fill.</li>
+        <li><strong>clipboardRead & clipboardWrite:</strong> Enables reading copied text for snippet history and copying snippets back to your system clipboard.</li>
+        <li><strong>Host Permissions (&lt;all_urls&gt;):</strong> Enables form auto-filling across web pages you choose to interact with.</li>
+      </ul>
+
+      <h2>5. User Control & Data Deletion</h2>
+      <p>You retain full control over your data at all times:</p>
+      <ul>
+        <li>You can turn off Auto-Capture at any time using the toggle switch in the sidebar header.</li>
+        <li>You can delete individual snippets or clear history directly from the sidebar UI.</li>
+        <li>Uninstalling the extension instantly and permanently deletes all stored extension data from your browser.</li>
+      </ul>
+
+      <h2>6. Changes to This Privacy Policy</h2>
+      <p>We may update this Privacy Policy periodically to reflect enhancements or regulatory requirements. Any updates will be published on this webpage.</p>
+
+      <h2>7. Contact & Support</h2>
+      <p>If you have any questions or feedback regarding this Privacy Policy, please contact:</p>
+      <p>
+        <strong>Author:</strong> Shafayat Hossain<br>
+        <strong>Email:</strong> <a href="mailto:shafayat@engineer.com" style="color: var(--primary);">shafayat@engineer.com</a><br>
+        <strong>Website:</strong> <a href="https://jqsafi.github.io" target="_blank" style="color: var(--primary);">https://jqsafi.github.io</a>
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 ClipFill • <a href="index.html">ClipFill Landing Page</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
